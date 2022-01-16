@@ -30,6 +30,8 @@ inputs:
   functions: # 多函数配置
     autoSignIn:
       handler: index.autoSignIn
+    appoint:
+      handler: index.appoint
     secKill:
       handler: index.secKill
   triggers: # 触发器
@@ -41,8 +43,15 @@ inputs:
         enable: true # 是否启动定时器，默认为启动
     - type: apigw
       parameters:
-        name: apigw1
+        name: secKill
         apis:
           - path: /secKill
             method: POST
             function: secKill
+    - type: apigw
+      parameters:
+        name: appoint
+        apis:
+          - path: /appoint
+            method: POST
+            function: appoint

@@ -41,7 +41,7 @@ module.exports = async (event, context) => {
       }
     }
     const html = generateHtml(executeResults);
-    await sendEmailFromQQ("每日签到", html, config.email);
+    //await sendEmailFromQQ("每日签到", html, config.email);
     console.log(name + "签到情况");
     console.log(executeResults.join(";"));
     console.log("============");

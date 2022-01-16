@@ -38,7 +38,6 @@ class JueJin extends App {
     let { err_no, data } = await this.axiosInstance({
       url: api.checkIn,
       method: "post",
-      headers: { cookie: this.cookie },
     });
     if (err_no) {
       this.executeResult.push(`今日掘金签到失败:${JSON.stringify(data)}`);
