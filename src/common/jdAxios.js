@@ -11,10 +11,10 @@ module.exports = function createJdAxiosInstance(config) {
       jda: config.jda,
     },
     //fiddler 代理
-    proxy: {
-      host: "127.0.0.1",
-      port: 6868,
-    },
+    // proxy: {
+    //   host: "127.0.0.1",
+    //   port: 6868,
+    // },
   });
   jdAxiosInstance.interceptors.response.use(function (response) {
     const { data: responseData, status, statusText } = response;
