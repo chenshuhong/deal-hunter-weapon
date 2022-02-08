@@ -4,7 +4,7 @@
   "description": "**中文** | [English](./README_EN.md)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "fetch-lecture": "node test/unit/fetchJkTime.test.js"
   },
   "author": "chenshuhong",
   "license": "ISC",
@@ -13,7 +13,9 @@
     "nodemailer": "^6.7.2"
   },
   "devDependencies": {
+    "fluent-ffmpeg": "^2.1.2",
     "jest": "^27.4.7",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "puppeteer": "^13.1.3"
   }
 }
