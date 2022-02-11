@@ -94,10 +94,12 @@ async function fetchLecture(cid) {
   console.log(`<<${lecture.title}>>爬取完成`);
 }
 
-async function startFetch() {
+async function startFetch(startIndex=0) {
   console.log("开始爬取极客时间课程");
   const ids = await getLectureIds();
-  for (let i = 0; i < ids.length; i++) {
+  console.log(`总共${ids.length}门课程`);
+  for (let i = startIndex; i < ids.length; i++) {
+    console.log(`课程序号：${i}`)
     const cid = ids[i];
     try {
       await fetchLecture(cid);

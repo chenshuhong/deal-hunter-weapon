@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const fs = require("fs");
+const axios = require('axios')
 const { addCookies } = require("./cookie");
 let browser, page;
 
@@ -16,8 +17,9 @@ function mkdir(paths) {
 function trimString(str) {
   return str
     .replace(/\s+/g, "")
-    .replace(/[?*]/g, "")
-    .replace(/[|\/\\]/g, "-");
+    .replace(/[?*:><"]/g, "")
+    .replace(/[|\/\\]/g, "-")
+    .replace(/[\b]/g, "");
 }
 
 async function fetchM38U(url) {
@@ -38,7 +40,7 @@ async function fetchM38U(url) {
   });
 }
 
-async function fetchArticle({ id, article_title, chapterTitle, lectureTitle }) {
+async function fetchArticle({ id, article_title, chapterTitle, lectureTitle,audio_download_url }) {
   chapterTitle = trimString(chapterTitle);
   article_title = trimString(article_title);
   lectureTitle = trimString(lectureTitle);
@@ -46,8 +48,10 @@ async function fetchArticle({ id, article_title, chapterTitle, lectureTitle }) {
   const paths = ["dist", lectureTitle, chapterTitle].filter((item) => item);
   const dirPath = mkdir(paths);
   const pdfPath = path.resolve(dirPath, `${article_title}.pdf`);
+  const audioPath = path.resolve(dirPath,`${article_title}.mp3`)
+  await fetchAudio(article_title,audioPath,audio_download_url)
   if (fs.existsSync(pdfPath)) {
-    console.log(`<<${article_title}>>已经创建过，跳过生成`);
+    console.log(`<<${article_title}>>已经创建过pdf，跳过生成`);
     return;
   }
   await initBrowserAndPage();
@@ -62,6 +66,19 @@ async function fetchArticle({ id, article_title, chapterTitle, lectureTitle }) {
   console.log(`爬取<<${article_title}>>成功`);
 }
 
+async function fetchAudio(article_title,audioPath,audio_download_url){
+  if (fs.existsSync(audioPath)) {
+    console.log(`<<${article_title}>>已经创建过mp3，跳过生成`);
+    return;
+  }
+  debugger
+  const {data} = await axios.get(audio_download_url,{
+    responseType:'arraybuffer'
+  })
+  fs.writeFileSync(audioPath,data)
+  console.log(`爬取<<${article_title}>>音频成功`);
+}
+
 async function initBrowserAndPage() {
   if (!browser) {
     browser = await puppeteer.launch({
@@ -74,7 +91,7 @@ async function initBrowserAndPage() {
   if (!page) {
     page = await browser.newPage();
     await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+      "Mozilla/6.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
     );
     await addCookies(page, ".time.geekbang.org");
     // page.setCookies();

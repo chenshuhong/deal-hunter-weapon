@@ -18,5 +18,5 @@ const {
 // })();
 
 (async () => {
-  await startFetch();
+  await startFetch(0);
 })();
